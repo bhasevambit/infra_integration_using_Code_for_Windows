@@ -1,0 +1,28 @@
+- name: WSL initialization
+
+  hosts: windows
+
+  tasks:
+    - name: Netsh delete Command execute for PortProxy
+      ansible.windows.win_command:
+        cmd: netsh.exe interface portproxy delete v4tov4 listenport=10022 listenaddress=192.168.61.171
+      register: result_netsh_delete_exe
+    - name: Check Result of "Netsh delete Command execute for PortProxy"
+      ansible.builtin.debug:
+        var: result_netsh_delete_exe
+
+    - name: Netsh Set Command execute for PortProxy
+      ansible.windows.win_command:
+        cmd: netsh.exe interface portproxy add v4tov4 listenaddress=192.168.61.171 listenport=10022 connectaddress=localhost connectport=22
+      register: result_netsh_set_exe
+    - name: Check Result of "Netsh Set Command execute for PortProxy"
+      ansible.builtin.debug:
+        var: result_netsh_set_exe
+
+    - name: Netsh Get Command execute for PortProxy
+      ansible.windows.win_command:
+        cmd: netsh.exe interface portproxy show v4tov4
+      register: result_netsh_get_exe
+    - name: Check Result of "Netsh Get Command execute for PortProxy"
+      ansible.builtin.debug:
+        var: result_netsh_get_exe.stdout_lines
